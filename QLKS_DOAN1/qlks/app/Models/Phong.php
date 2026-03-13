@@ -56,6 +56,7 @@ class Phong extends Model
 
     /**
      * Quan hệ với bảng DatPhong (1-n)
+     * tại Phong có thể có nhiều DatPhong, nhưng mỗi DatPhong chỉ thuộc về một Phong
      */
     public function datPhong()
     {
@@ -64,6 +65,7 @@ class Phong extends Model
 
     /**
      * Quan hệ với bảng HoaDon (1-n)
+     * tại Phong có thể có nhiều HoaDon, nhưng mỗi HoaDon chỉ thuộc về một Phong
      */
     public function hoaDon()
     {

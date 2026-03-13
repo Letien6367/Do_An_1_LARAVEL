@@ -50,6 +50,7 @@ class User extends Authenticatable
 
     /**
      * Quan hệ với bảng KhachHang (1-n)
+     * tại User có thể có nhiều KhachHang, nhưng mỗi KhachHang chỉ thuộc về một User
      */
     public function khachHang()
     {

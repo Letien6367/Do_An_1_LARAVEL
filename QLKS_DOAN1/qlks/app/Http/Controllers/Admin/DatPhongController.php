@@ -238,4 +238,76 @@ class DatPhongController extends BaseController
         return redirect()->route('admin.dat-phong.index')
             ->with('success', 'Xóa đặt phòng thành công!');
     }
+
+    /**
+     * Xác nhận nhanh đơn đặt phòng từ màn hình danh sách
+     */
+    public function xacNhan($id)
+    {
+        // Lấy đơn đặt phòng theo mã, nếu không có thì trả về 404
+        $datPhong = DatPhong::with('trangThaiDatPhong')->findOrFail($id);
+
+        // Lấy tên trạng thái hiện tại để kiểm tra có được phép cập nhật hay không
+        $tenTrangThaiHienTai = mb_strtolower($datPhong->trangThaiDatPhong->TenTrangThaiDP ?? '');
+
+        // Chỉ cho xác nhận khi đơn đang ở trạng thái chờ
+        if (!str_contains($tenTrangThaiHienTai, 'chờ')) {
+            return redirect()->route('admin.dat-phong.index')
+                ->with('error', 'Chỉ đơn đang chờ mới có thể xác nhận.');
+        }
+
+        // Tìm trạng thái "Đã xác nhận" trong bảng trạng thái
+        $trangThaiDaXacNhan = TrangThaiDatPhong::where('TenTrangThaiDP', 'like', '%xác nhận%')->first();
+
+        // Nếu chưa có trạng thái "Đã xác nhận" thì báo lỗi để tránh lưu sai dữ liệu
+        if (!$trangThaiDaXacNhan) {
+            return redirect()->route('admin.dat-phong.index')
+                ->with('error', 'Không tìm thấy trạng thái Đã xác nhận. Vui lòng kiểm tra dữ liệu trạng thái.');
+        }
+
+        // Cập nhật trạng thái đơn đặt phòng sang "Đã xác nhận"
+        $datPhong->update([
+            'MaTrangThaiDP' => $trangThaiDaXacNhan->MaTrangThaiDP,
+        ]);
+
+        // Quay lại trang danh sách với thông báo thành công
+        return redirect()->route('admin.dat-phong.index')
+            ->with('success', 'Đã xác nhận đơn đặt phòng thành công.');
+    }
+
+    /**
+     * Hủy nhanh đơn đặt phòng từ màn hình danh sách
+     */
+    public function huy($id)
+    {
+        // Lấy đơn đặt phòng theo mã, nếu không có thì trả về 404
+        $datPhong = DatPhong::with('trangThaiDatPhong')->findOrFail($id);
+
+        // Lấy tên trạng thái hiện tại để kiểm tra điều kiện hủy
+        $tenTrangThaiHienTai = mb_strtolower($datPhong->trangThaiDatPhong->TenTrangThaiDP ?? '');
+
+        // Không cho hủy lại nếu đơn đã ở trạng thái hủy
+        if (str_contains($tenTrangThaiHienTai, 'hủy')) {
+            return redirect()->route('admin.dat-phong.index')
+                ->with('error', 'Đơn này đã được hủy trước đó.');
+        }
+
+        // Tìm trạng thái "Đã hủy" trong bảng trạng thái
+        $trangThaiDaHuy = TrangThaiDatPhong::where('TenTrangThaiDP', 'like', '%hủy%')->first();
+
+        // Nếu chưa có trạng thái "Đã hủy" thì báo lỗi để tránh lưu sai dữ liệu
+        if (!$trangThaiDaHuy) {
+            return redirect()->route('admin.dat-phong.index')
+                ->with('error', 'Không tìm thấy trạng thái Đã hủy. Vui lòng kiểm tra dữ liệu trạng thái.');
+        }
+
+        // Cập nhật trạng thái đơn đặt phòng sang "Đã hủy"
+        $datPhong->update([
+            'MaTrangThaiDP' => $trangThaiDaHuy->MaTrangThaiDP,
+        ]);
+
+        // Quay lại trang danh sách với thông báo thành công
+        return redirect()->route('admin.dat-phong.index')
+            ->with('success', 'Đã hủy đơn đặt phòng thành công.');
+    }
 }

@@ -135,13 +135,46 @@
                                         <span class="badge bg-{{ $statusClass }}">{{ $statusName }}</span>
                                     </td>
                                     <td class="text-center">
-                                        <div class="btn-group btn-group-sm">
-                                            <a href="{{ route('admin.dat-phong.show', $datPhong->MaDatPhong) }}" class="btn btn-outline-info" title="Xem"><i class="fas fa-eye"></i></a>
-                                            <a href="{{ route('admin.dat-phong.edit', $datPhong->MaDatPhong) }}" class="btn btn-outline-warning" title="Sửa"><i class="fas fa-edit"></i></a>
-                                            <form action="{{ route('admin.dat-phong.destroy', $datPhong->MaDatPhong) }}" method="POST" style="display:inline;" onsubmit="return confirm('Bạn có chắc chắn muốn xóa?')">
+                                        @php
+                                            // Đưa trạng thái hiện tại về chữ thường để so sánh dễ hơn
+                                            $tenTrangThaiThuong = mb_strtolower($statusName);
+
+                                            // Chỉ hiển thị nút "Xác nhận" khi đơn đang ở trạng thái chờ
+                                            $choPhepXacNhan = str_contains($tenTrangThaiThuong, 'chờ');
+
+                                            // Chỉ hiển thị nút "Hủy" khi đơn chưa phải là trạng thái hủy
+                                            $choPhepHuy = !str_contains($tenTrangThaiThuong, 'hủy');
+                                        @endphp
+
+                                        {{-- Gộp tất cả thao tác vào cùng 1 hàng để giao diện gọn hơn --}}
+                                        <div class="d-inline-flex align-items-center gap-1 flex-nowrap">
+                                            @if($choPhepXacNhan)
+                                                {{-- Nút xác nhận nhanh (icon) --}}
+                                                <form action="{{ route('admin.dat-phong.xac-nhan', $datPhong->MaDatPhong) }}" method="POST" class="m-0" onsubmit="return confirm('Bạn có chắc muốn xác nhận đơn này?')">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-sm btn-success" title="Xác nhận đơn">
+                                                        <i class="fas fa-check"></i>
+                                                    </button>
+                                                </form>
+                                            @endif
+
+                                            @if($choPhepHuy)
+                                                {{-- Nút hủy nhanh (icon) --}}
+                                                <form action="{{ route('admin.dat-phong.huy', $datPhong->MaDatPhong) }}" method="POST" class="m-0" onsubmit="return confirm('Bạn có chắc muốn hủy đơn này?')">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-sm btn-danger" title="Hủy đơn">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                </form>
+                                            @endif
+
+                                            {{-- Nhóm nút thao tác cơ bản: xem / sửa / xóa --}}
+                                            <a href="{{ route('admin.dat-phong.show', $datPhong->MaDatPhong) }}" class="btn btn-sm btn-outline-info" title="Xem"><i class="fas fa-eye"></i></a>
+                                            <a href="{{ route('admin.dat-phong.edit', $datPhong->MaDatPhong) }}" class="btn btn-sm btn-outline-warning" title="Sửa"><i class="fas fa-edit"></i></a>
+                                            <form action="{{ route('admin.dat-phong.destroy', $datPhong->MaDatPhong) }}" method="POST" class="m-0" onsubmit="return confirm('Bạn có chắc chắn muốn xóa?')">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-outline-danger" title="Xóa"><i class="fas fa-trash"></i></button>
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Xóa"><i class="fas fa-trash"></i></button>
                                             </form>
                                         </div>
                                     </td>

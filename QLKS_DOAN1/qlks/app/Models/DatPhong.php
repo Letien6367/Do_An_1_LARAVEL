@@ -64,6 +64,7 @@ class DatPhong extends Model
 
     /**
      * Quan hệ với bảng HoaDon (1-n)
+     * tại DatPhong có thể có nhiều HoaDon, nhưng mỗi HoaDon chỉ thuộc về một DatPhong
      */
     public function hoaDon()
     {

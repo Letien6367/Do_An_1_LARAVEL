@@ -79,6 +79,10 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     // Quản lý đặt phòng
     Route::resource('dat-phong', AdminDatPhongController::class);
 
+    // Thao tác nhanh trên danh sách đặt phòng: xác nhận hoặc hủy đơn
+    Route::post('dat-phong/{id}/xac-nhan', [AdminDatPhongController::class, 'xacNhan'])->name('dat-phong.xac-nhan');
+    Route::post('dat-phong/{id}/huy', [AdminDatPhongController::class, 'huy'])->name('dat-phong.huy');
+
     // Quản lý khách hàng
     Route::resource('khach-hang', KhachHangController::class);
 
