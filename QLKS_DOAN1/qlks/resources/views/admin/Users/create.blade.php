@@ -146,7 +146,7 @@
                         Trường: Vai trò (bắt buộc, chọn 1 trong 3)
                         - admin: Quản trị viên - toàn quyền
                         - letan: Lễ tân - quản lý đặt phòng, khách hàng
-                        - user:  Khách hàng - đặt phòng trực tuyến
+                        - KhachHang: Khách hàng - đặt phòng trực tuyến
                     --}}
                     <div class="mb-3">
                         <label class="form-label fw-semibold">
@@ -156,7 +156,7 @@
                             <option value="">-- Chọn vai trò --</option>
                             <option value="admin" {{ old('VaiTro') == 'admin' ? 'selected' : '' }}>Quản trị viên</option>
                             <option value="letan" {{ old('VaiTro') == 'letan' ? 'selected' : '' }}>Lễ tân</option>
-                            <option value="user" {{ old('VaiTro') == 'user' ? 'selected' : '' }}>Khách hàng</option>
+                            <option value="KhachHang" {{ in_array(old('VaiTro'), ['KhachHang', 'user']) ? 'selected' : '' }}>Khách hàng</option>
                         </select>
                         @error('VaiTro')
                             <div class="invalid-feedback">{{ $message }}</div>

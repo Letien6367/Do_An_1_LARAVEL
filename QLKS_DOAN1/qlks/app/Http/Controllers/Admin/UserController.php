@@ -20,7 +20,7 @@ use Illuminate\Validation\Rule;                  // Quy tắc validate nâng cao
  * - Hiển thị danh sách tài khoản người dùng
  * - Thêm, sửa, xóa tài khoản
  * - Tìm kiếm theo tên, email, SĐT
- * - Lọc theo vai trò (admin, letan, user)
+ * - Lọc theo vai trò (admin, letan, KhachHang)
  */
 class UserController extends Controller
 {
@@ -64,9 +64,14 @@ class UserController extends Controller
             });
         }
 
-        // --- Lọc theo vai trò (admin / letan / user) ---
+        // --- Lọc theo vai trò (admin / letan / KhachHang) ---
         if ($request->has('vai_tro') && $request->vai_tro != '') {
-            $query->where('VaiTro', $request->vai_tro);
+            if (in_array($request->vai_tro, ['KhachHang', 'user'], true)) {
+                // Tương thích dữ liệu cũ: một số bản ghi cũ dùng "user".
+                $query->whereIn('VaiTro', ['KhachHang', 'user']);
+            } else {
+                $query->where('VaiTro', $request->vai_tro);
+            }
         }
 
         // Sắp xếp mới nhất lên đầu, phân trang 10 bản ghi/trang
@@ -76,7 +81,7 @@ class UserController extends Controller
         $tongUser = User::count();                                          // Tổng tất cả user
         $soAdmin = User::where('VaiTro', 'admin')->count();                 // Số admin
         $soLeTan = User::where('VaiTro', 'letan')->count();                 // Số lễ tân
-        $soKhachHang = User::where('VaiTro', 'user')->count();              // Số khách hàng (user thường)
+        $soKhachHang = User::whereIn('VaiTro', ['KhachHang', 'user'])->count(); // Số khách hàng
 
         // Trả về view danh sách kèm theo dữ liệu
         return view('admin.Users.index', compact(
@@ -111,7 +116,7 @@ class UserController extends Controller
             'email'       => 'required|email|max:255|unique:users,email',     // Email: bắt buộc, duy nhất
             'password'    => 'required|string|min:6|confirmed',               // Mật khẩu: tối thiểu 6, phải xác nhận
             'SoDienThoai' => 'nullable|string|max:20',                        // SĐT: không bắt buộc
-            'VaiTro'      => 'required|in:admin,letan,user',                  // Vai trò: chỉ 3 giá trị hợp lệ
+            'VaiTro'      => 'required|in:admin,letan,KhachHang,user',        // Vai trò: chỉ 3 giá trị hợp lệ (hỗ trợ user cũ)
         ], [
             // --- Thông báo lỗi bằng tiếng Việt ---
             'name.required'        => 'Vui lòng nhập họ và tên',
@@ -126,12 +131,14 @@ class UserController extends Controller
         ]);
 
         // --- Tạo tài khoản mới ---
+        $vaiTro = $request->VaiTro === 'user' ? 'KhachHang' : $request->VaiTro;
+
         User::create([
             'name'        => $request->name,
             'email'       => $request->email,
             'password'    => Hash::make($request->password),  // Mã hóa mật khẩu bằng bcrypt
             'SoDienThoai' => $request->SoDienThoai,
-            'VaiTro'      => $request->VaiTro,
+            'VaiTro'      => $vaiTro,
         ]);
 
         // Chuyển về trang danh sách kèm thông báo thành công
@@ -180,7 +187,7 @@ class UserController extends Controller
             'email'       => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)], // Bỏ qua email của chính user này
             'password'    => 'nullable|string|min:6|confirmed',   // Mật khẩu: không bắt buộc khi sửa
             'SoDienThoai' => 'nullable|string|max:20',
-            'VaiTro'      => 'required|in:admin,letan,user',
+            'VaiTro'      => 'required|in:admin,letan,KhachHang,user',
         ], [
             'name.required'        => 'Vui lòng nhập họ và tên',
             'email.required'       => 'Vui lòng nhập email',
@@ -193,11 +200,13 @@ class UserController extends Controller
         ]);
 
         // --- Chuẩn bị dữ liệu cần cập nhật ---
+        $vaiTro = $request->VaiTro === 'user' ? 'KhachHang' : $request->VaiTro;
+
         $data = [
             'name'        => $request->name,
             'email'       => $request->email,
             'SoDienThoai' => $request->SoDienThoai,
-            'VaiTro'      => $request->VaiTro,
+            'VaiTro'      => $vaiTro,
         ];
 
         // Chỉ cập nhật mật khẩu nếu admin có nhập mật khẩu mới

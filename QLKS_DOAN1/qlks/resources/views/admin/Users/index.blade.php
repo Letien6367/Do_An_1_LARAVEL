@@ -142,7 +142,7 @@
                         <option value="">-- Tất cả vai trò --</option>
                         <option value="admin" {{ request('vai_tro') == 'admin' ? 'selected' : '' }}>Quản trị viên</option>
                         <option value="letan" {{ request('vai_tro') == 'letan' ? 'selected' : '' }}>Lễ tân</option>
-                        <option value="user" {{ request('vai_tro') == 'user' ? 'selected' : '' }}>Khách hàng</option>
+                        <option value="KhachHang" {{ in_array(request('vai_tro'), ['KhachHang', 'user']) ? 'selected' : '' }}>Khách hàng</option>
                     </select>
                 </div>
 

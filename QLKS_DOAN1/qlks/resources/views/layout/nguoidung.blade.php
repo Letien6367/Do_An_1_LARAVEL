@@ -172,15 +172,15 @@
                     <h6 class="fw-bold mb-3">Liên hệ</h6>
                     <div class="d-flex gap-3 mb-2">
                         <div class="text-gold"><i class="fas fa-map-marker-alt"></i></div>
-                        <p class="text-white-50 small mb-0">123 Nguyễn Huệ, Quận 1, TP. HCM</p>
+                        <p class="text-white-50 small mb-0">Nguyễn Văn cừ, Quận Ninh Kiều, TP. Cần Thơ</p>
                     </div>
                     <div class="d-flex gap-3 mb-2">
                         <div class="text-gold"><i class="fas fa-phone-alt"></i></div>
-                        <p class="text-white-50 small mb-0">+84 123 456 789</p>
+                        <p class="text-white-50 small mb-0">+84 0328343771</p>
                     </div>
                     <div class="d-flex gap-3">
                         <div class="text-gold"><i class="fas fa-envelope"></i></div>
-                        <p class="text-white-50 small mb-0">info@luxuryhotel.vn</p>
+                        <p class="text-white-50 small mb-0">Letienminh304@gmail.com</p>
                     </div>
                 </div>
             </div>

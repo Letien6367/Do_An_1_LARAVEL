@@ -153,7 +153,7 @@
                             <option value="">-- Chọn vai trò --</option>
                             <option value="admin" {{ old('VaiTro', $user->VaiTro) == 'admin' ? 'selected' : '' }}>Quản trị viên</option>
                             <option value="letan" {{ old('VaiTro', $user->VaiTro) == 'letan' ? 'selected' : '' }}>Lễ tân</option>
-                            <option value="user" {{ old('VaiTro', $user->VaiTro) == 'user' ? 'selected' : '' }}>Khách hàng</option>
+                            <option value="KhachHang" {{ in_array(old('VaiTro', $user->VaiTro), ['KhachHang', 'user']) ? 'selected' : '' }}>Khách hàng</option>
                         </select>
                         @error('VaiTro')
                             <div class="invalid-feedback">{{ $message }}</div>
