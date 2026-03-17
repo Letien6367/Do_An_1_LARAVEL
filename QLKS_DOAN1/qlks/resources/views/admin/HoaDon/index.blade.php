@@ -47,11 +47,11 @@
     @endif
 
     {{-- ============================= --}}
-    {{-- 4 THẺ THỐNG KÊ TỔNG QUAN     --}}
+    {{-- 2 THẺ THỐNG KÊ TỔNG QUAN     --}}
     {{-- ============================= --}}
     <div class="row g-3 mb-4">
         {{-- Thẻ 1: Tổng số hóa đơn --}}
-        <div class="col-xl-3 col-md-6">
+        <div class="col-xl-6 col-md-6">
             <div class="card border-0 shadow-sm h-100 rounded-3">
                 <div class="card-body d-flex align-items-center gap-3">
                     <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
@@ -66,24 +66,8 @@
             </div>
         </div>
 
-        {{-- Thẻ 2: Tổng doanh thu --}}
-        <div class="col-xl-3 col-md-6">
-            <div class="card border-0 shadow-sm h-100 rounded-3">
-                <div class="card-body d-flex align-items-center gap-3">
-                    <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
-                         style="width:55px;height:55px;background:#d5f5e3;">
-                        <i class="fas fa-money-bill-wave fa-lg text-success"></i>
-                    </div>
-                    <div>
-                        <h5 class="fw-bold mb-0 text-success">{{ number_format($tongDoanhThu, 0, ',', '.') }}đ</h5>
-                        <small class="text-muted">Tổng doanh thu</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         {{-- Thẻ 3: Hóa đơn tháng này --}}
-        <div class="col-xl-3 col-md-6">
+        <div class="col-xl-6 col-md-6">
             <div class="card border-0 shadow-sm h-100 rounded-3">
                 <div class="card-body d-flex align-items-center gap-3">
                     <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
@@ -93,22 +77,6 @@
                     <div>
                         <h5 class="fw-bold mb-0 text-warning">{{ $hoaDonThangNay }}</h5>
                         <small class="text-muted">Hóa đơn tháng {{ \Carbon\Carbon::now()->month }}</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        {{-- Thẻ 4: Doanh thu tháng này --}}
-        <div class="col-xl-3 col-md-6">
-            <div class="card border-0 shadow-sm h-100 rounded-3">
-                <div class="card-body d-flex align-items-center gap-3">
-                    <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
-                         style="width:55px;height:55px;background:#eac8fd;">
-                        <i class="fas fa-chart-pie fa-lg" style="color:#8e44ad;"></i>
-                    </div>
-                    <div>
-                        <h5 class="fw-bold mb-0" style="color:#8e44ad;">{{ number_format($doanhThuThangNay, 0, ',', '.') }}đ</h5>
-                        <small class="text-muted">Doanh thu tháng {{ \Carbon\Carbon::now()->month }}</small>
                     </div>
                 </div>
             </div>

@@ -12,6 +12,16 @@ use Illuminate\Http\Request;
 class DatPhongController extends BaseController
 {
     /**
+     * Lấy map trạng thái đặt phòng theo tên thường hóa
+     */
+    private function getTrangThaiMapByName()
+    {
+        return TrangThaiDatPhong::all()->keyBy(function ($trangThai) {
+            return mb_strtolower(trim($trangThai->TenTrangThaiDP));
+        });
+    }
+
+    /**
      * Hiển thị danh sách đặt phòng
      */
     public function index(Request $request)
@@ -46,17 +56,16 @@ class DatPhongController extends BaseController
 
         $datPhongs = $query->orderBy('MaDatPhong', 'desc')->paginate(10);
 
-        // Thống kê
+        // Thống kê theo mã trạng thái chính xác để tránh đếm sai do dùng LIKE
+        $trangThaiMap = $this->getTrangThaiMapByName();
+        $maChoXacNhan = optional($trangThaiMap->get('chờ xác nhận'))->MaTrangThaiDP;
+        $maDaXacNhan = optional($trangThaiMap->get('đã xác nhận'))->MaTrangThaiDP;
+        $maDaHuy = optional($trangThaiMap->get('đã hủy'))->MaTrangThaiDP;
+
         $tongDatPhong = DatPhong::count();
-        $dangChoXacNhan = DatPhong::whereHas('trangThaiDatPhong', function($q) {
-            $q->where('TenTrangThaiDP', 'like', '%chờ%');
-        })->count();
-        $daXacNhan = DatPhong::whereHas('trangThaiDatPhong', function($q) {
-            $q->where('TenTrangThaiDP', 'like', '%xác nhận%');
-        })->count();
-        $daHuy = DatPhong::whereHas('trangThaiDatPhong', function($q) {
-            $q->where('TenTrangThaiDP', 'like', '%hủy%');
-        })->count();
+        $dangChoXacNhan = $maChoXacNhan ? DatPhong::where('MaTrangThaiDP', $maChoXacNhan)->count() : 0;
+        $daXacNhan = $maDaXacNhan ? DatPhong::where('MaTrangThaiDP', $maDaXacNhan)->count() : 0;
+        $daHuy = $maDaHuy ? DatPhong::where('MaTrangThaiDP', $maDaHuy)->count() : 0;
 
         $trangThais = TrangThaiDatPhong::all();
 
@@ -256,8 +265,8 @@ class DatPhongController extends BaseController
                 ->with('error', 'Chỉ đơn đang chờ mới có thể xác nhận.');
         }
 
-        // Tìm trạng thái "Đã xác nhận" trong bảng trạng thái
-        $trangThaiDaXacNhan = TrangThaiDatPhong::where('TenTrangThaiDP', 'like', '%xác nhận%')->first();
+        // Tìm đúng trạng thái "Đã xác nhận" để tránh lấy nhầm "Chờ xác nhận"
+        $trangThaiDaXacNhan = $this->getTrangThaiMapByName()->get('đã xác nhận');
 
         // Nếu chưa có trạng thái "Đã xác nhận" thì báo lỗi để tránh lưu sai dữ liệu
         if (!$trangThaiDaXacNhan) {
@@ -292,8 +301,8 @@ class DatPhongController extends BaseController
                 ->with('error', 'Đơn này đã được hủy trước đó.');
         }
 
-        // Tìm trạng thái "Đã hủy" trong bảng trạng thái
-        $trangThaiDaHuy = TrangThaiDatPhong::where('TenTrangThaiDP', 'like', '%hủy%')->first();
+        // Tìm đúng trạng thái "Đã hủy"
+        $trangThaiDaHuy = $this->getTrangThaiMapByName()->get('đã hủy');
 
         // Nếu chưa có trạng thái "Đã hủy" thì báo lỗi để tránh lưu sai dữ liệu
         if (!$trangThaiDaHuy) {

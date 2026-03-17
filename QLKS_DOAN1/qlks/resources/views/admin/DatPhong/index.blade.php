@@ -128,9 +128,11 @@
                                         @php
                                             $statusClass = 'warning';
                                             $statusName = $datPhong->trangThaiDatPhong->TenTrangThaiDP ?? 'N/A';
-                                            if (str_contains(strtolower($statusName), 'xác nhận')) $statusClass = 'success';
-                                            if (str_contains(strtolower($statusName), 'hủy')) $statusClass = 'danger';
-                                            if (str_contains(strtolower($statusName), 'hoàn thành') || str_contains(strtolower($statusName), 'trả')) $statusClass = 'info';
+                                            $statusNameLower = mb_strtolower($statusName);
+                                            if (str_contains($statusNameLower, 'chờ')) $statusClass = 'warning';
+                                            if (str_contains($statusNameLower, 'đã xác nhận')) $statusClass = 'success';
+                                            if (str_contains($statusNameLower, 'hủy')) $statusClass = 'danger';
+                                            if (str_contains($statusNameLower, 'hoàn thành') || str_contains($statusNameLower, 'trả')) $statusClass = 'info';
                                         @endphp
                                         <span class="badge bg-{{ $statusClass }}">{{ $statusName }}</span>
                                     </td>
