@@ -12,9 +12,11 @@
 
 @push('styles')
 <style>
-    /* Hero banner - Nền gradient (không dùng ảnh ngoài) */
+    /* Hero banner - Dùng ảnh khách sạn làm nền + lớp phủ tối */
     .hero-section {
-        background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 50%, #1e3a5f 100%);
+        background:
+            linear-gradient(rgba(18, 39, 63, 0.62), rgba(18, 39, 63, 0.62)),
+            url('{{ asset('layout/hotel-bg.jpg') }}') center/cover no-repeat;
         min-height: 100vh;
         display: flex;
         align-items: center;
